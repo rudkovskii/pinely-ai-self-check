@@ -163,6 +163,7 @@
   <!-- Q4 own task -->
   <div class="q">
     <p class="qlabel" id="t-q4">Your task<span class="opt" id="t-opt4">Optional</span></p>
+    <p class="qhint" id="t-q4hint"></p>
     <textarea id="owntask" maxlength="300"></textarea>
     <div class="counter"><span id="count">0</span>/300</div>
   </div>
@@ -203,18 +204,18 @@ const CONFIG = {
   // 5 уровней. name/blurb — по языку.
   LEVELS: {
     en:[
-      {name:'Observer',     blurb:"AI on your radar. You've heard about it, maybe tried it once or twice, but it isn't part of your work yet."},
-      {name:'Experimenter', blurb:"You use it now and then. Sometimes it helps, sometimes the result isn't worth it — it's still hit or miss."},
-      {name:'Practitioner', blurb:"You have go-to tasks where AI reliably helps. You know how to give it context and check what it returns."},
-      {name:'Integrator',   blurb:"AI is part of how you work: saved prompts, templates, small automations. You share what works with your team."},
-      {name:'Transformer',  blurb:"You reshape how your team works around AI and set the standards others follow."},
+      {name:'Observer',     blurb:"AI is on my radar, but not in my hands yet. I've heard how colleagues use it and maybe tried a chatbot once or twice out of curiosity. In my day-to-day work I still do everything the usual way."},
+      {name:'Experimenter', blurb:"I reach for AI now and then, without a real system. Sometimes it saves me time, sometimes the answer is off and I redo it myself. I'm still working out which tasks are worth handing over and how to ask."},
+      {name:'Practitioner', blurb:"I have a handful of tasks where AI reliably helps, and I turn to it on purpose. I know how to give it the context it needs, and I always check what it returns before I use it. For those tasks it's part of my routine now."},
+      {name:'Integrator',   blurb:"AI is woven into how I work. I keep prompts and templates I reuse, I've set up small automations, and I lean on it across many tasks in my week. I also share what works with my team so they don't start from scratch."},
+      {name:'Transformer',  blurb:"I change how my whole team works around AI, beyond my own tasks. I see where it can reshape a process, I set the way we use it, and I help others level up. Colleagues come to me for the standard."},
     ],
     ru:[
-      {name:'Наблюдатель',   blurb:'AI на радаре. Слышали, может пробовали пару раз, но в работу пока не встроено.'},
-      {name:'Экспериментатор',blurb:'Пользуетесь время от времени. Иногда помогает, иногда результат не стоит усилий — пока нестабильно.'},
-      {name:'Практик',       blurb:'Есть задачи, где AI стабильно помогает. Умеете дать контекст и проверить результат.'},
-      {name:'Интегратор',    blurb:'AI встроен в работу: свои промпты, шаблоны, мелкие автоматизации. Делитесь находками с командой.'},
-      {name:'Трансформатор', blurb:'Перестраиваете работу команды вокруг AI и задаёте стандарты.'},
+      {name:'Наблюдатель',   blurb:'AI у меня на радаре, но пока не в руках. Слышал, как им пользуются коллеги, может пробовал чат-бота пару раз из любопытства. В повседневной работе всё делаю привычным способом.'},
+      {name:'Экспериментатор',blurb:'Берусь за AI время от времени, без системы. Иногда экономит время, иногда ответ мимо — и я переделываю сам. Пока разбираюсь, какие задачи стоит отдавать и как формулировать запрос.'},
+      {name:'Практик',       blurb:'Есть несколько задач, где AI стабильно помогает, и я обращаюсь к нему осознанно. Умею дать нужный контекст и всегда проверяю результат перед использованием. Для этих задач он уже часть рутины.'},
+      {name:'Интегратор',    blurb:'AI встроен в мою работу. Держу свои промпты и шаблоны, настроил мелкие автоматизации, опираюсь на него в разных задачах недели. Делюсь находками с командой, чтобы не начинали с нуля.'},
+      {name:'Трансформатор', blurb:'Меняю то, как работает вся команда вокруг AI, шире собственных задач. Вижу, где он может перестроить процесс, задаю, как мы им пользуемся, и помогаю расти другим. За стандартом приходят ко мне.'},
     ],
   },
 
@@ -240,11 +241,12 @@ const CONFIG = {
       switchHint:'Reviewers only: flip through the looks and pick one. Turn this off with SHOW_SWITCHER before shipping.',
       q1:'Your team', req:'Required', opt:'Optional',
       teamPlaceholder:'Select your team',
-      q2:'Place yourself on the map — where are you with AI at work today?',
-      q2hint:'Drag the handle. You can stop between levels.',
+      q2:'How do you see yourself with AI at work today?',
+      q2hint:'Go with your own sense of where you are — this is a subjective read, and every answer is fine. Drag the handle. If you feel between two levels, leave it halfway between them.',
       q3:'What do you deal with most in your work? Pick what fits.',
       addPh:'Add your own', addBtn:'Add',
-      q4:"Is there a task you'd like to try running with AI right now? Describe it in a line or two.",
+      q4:'Which task would you like to work through with AI?',
+      q4hint:"Pick one real task from your week you'd be curious to try with AI. A line or two is enough.",
       q4ph:'Keep it general — no client names or figures.',
       submit:'Copy my answers',
       copied:'Copied. Paste this line into the survey thread in Slack.',
@@ -262,11 +264,12 @@ const CONFIG = {
       switchHint:'Только для ревьюеров: пролистайте варианты и выберите один. Перед выкаткой отключите через SHOW_SWITCHER.',
       q1:'Ваша команда', req:'Обязательно', opt:'Необязательно',
       teamPlaceholder:'Выберите команду',
-      q2:'Поставьте себя на карту — где вы с AI в работе сегодня?',
-      q2hint:'Тяните ручку. Можно встать между уровнями.',
+      q2:'Как вы сами видите себя с AI в работе сегодня?',
+      q2hint:'Ориентируйтесь на своё ощущение — это субъективная оценка, и любой ответ нормален. Тяните ручку. Если чувствуете себя между двумя уровнями — оставьте её посередине между ними.',
       q3:'С чем вы работаете чаще всего? Отметьте, что подходит.',
       addPh:'Добавить своё', addBtn:'Добавить',
-      q4:'Есть задача, которую хотели бы прямо сейчас попробовать с AI? Опишите в строку-две.',
+      q4:'Какую задачу вам было бы интересно разобрать с AI?',
+      q4hint:'Выберите одну реальную задачу из вашей недели, которую любопытно попробовать с AI. Хватит строки-двух.',
       q4ph:'Общими словами — без имён клиентов и цифр.',
       submit:'Скопировать мои ответы',
       copied:'Скопировано. Вставьте эту строку в тред опроса в Slack.',
@@ -334,7 +337,8 @@ document.getElementById('submit').textContent=S.submit;
 // re-append req/opt badges lost by textContent
 document.getElementById('t-q1').innerHTML=S.q1+`<span class="req">${S.req}</span>`;
 document.getElementById('t-q2').innerHTML=S.q2.split('—')[0].trim()+`<span class="req">${S.req}</span>`;
-document.getElementById('t-q4').innerHTML=(L==='ru'?'Ваша задача':'Your task')+`<span class="opt">${S.opt}</span>`;
+document.getElementById('t-q4').innerHTML=S.q4+`<span class="opt">${S.opt}</span>`;
+document.getElementById('t-q4hint').textContent=S.q4hint;
 
 /* ---- team ---- */
 const teamSel=document.getElementById('team');
