@@ -104,6 +104,7 @@
   .btn{font-family:var(--font);font-size:17px;font-weight:700;border:none;background:var(--green);color:#fff;
     border-radius:100px;padding:14px 30px;cursor:pointer}
   .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .btn:disabled{background:#9dbfa6;cursor:default}
   .err{color:#c0392b;font-size:14px;margin-top:12px;display:none}
   .err.show{display:block}
   .copybox{margin-top:16px;display:none}
@@ -209,7 +210,8 @@ const TILES = {"mountains": ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
 const CONFIG = {
   VISUAL_STYLE: 'dots',          // 'trees' | 'sprout' | 'mountains' | 'icons' | 'dots'
   LANG: 'en',                    // 'en' | 'ru'
-  SHOW_SWITCHER: false,           // true — показывать переключатель визуала (для выбора). Перед выкаткой поставить false.
+  SHOW_SWITCHER: false,
+  ENDPOINT: 'https://script.google.com/macros/s/AKfycbxQ3aX1KQxWzdO9zdv1hyhjN2eiHTZ6cEyh9P5uCcoH1FU6pGrQumPP83MyGvDDOZwyxg/exec', // Google Apps Script — приёмник ответов в таблицу           // true — показывать переключатель визуала (для выбора). Перед выкаткой поставить false.
 
   TEAMS: [
     {id:'administrative',      label:'Administrative Department and Travel'},
@@ -255,7 +257,7 @@ const CONFIG = {
     en:{
       title:'AI at work — a quick self-check',
       lead:'Place yourself on the map and mark what you deal with. Takes 1–2 minutes.',
-      disclaimer:'Runs entirely in your browser — nothing is sent automatically. Please keep the free-text field general: no client names, deal figures, or personal data.',
+      disclaimer:'Your answers are saved to an internal sheet for the AI-readiness review. Please keep the free-text fields general: no client names, deal figures, or personal data.',
       switch:'Visual style — for review',
       switchHint:'Reviewers only: flip through the looks and pick one. Turn this off with SHOW_SWITCHER before shipping.',
       q1:'Your team', req:'Required', opt:'Optional',
@@ -274,7 +276,9 @@ const CONFIG = {
       q6:'Is there something specific you would like to learn about AI?',
       q6hint:'In your own words — a tool, a task, or a question you keep coming back to.',
       q6ph:'What would you like to learn?',
-      submit:'Copy my answers',
+      submit:'Send my answers',
+      sent:'Thanks — your answers were saved.',
+      backup:'Backup copy (send to Dmitrii only if asked):',
       copied:'Copied. Paste it into your DM to Dmitrii in Slack.',
       contains:'It is just your answers, in plain text.',
       copyFallback:'Copy did not run automatically — select the line below and copy it.',
@@ -288,7 +292,7 @@ const CONFIG = {
     ru:{
       title:'AI в работе — быстрая самооценка',
       lead:'Поставьте себя на карту и отметьте, с чем работаете. 1–2 минуты.',
-      disclaimer:'Работает целиком в вашем браузере — ничего не отправляется автоматически. В поле свободного текста держите общие формулировки: без имён клиентов, сумм сделок и персональных данных.',
+      disclaimer:'Ответы сохраняются во внутреннюю таблицу для обзора AI-готовности. В полях свободного текста держите общие формулировки: без имён клиентов, сумм сделок и персональных данных.',
       switch:'Визуальный стиль — для ревью',
       switchHint:'Только для ревьюеров: пролистайте варианты и выберите один. Перед выкаткой отключите через SHOW_SWITCHER.',
       q1:'Ваша команда', req:'Обязательно', opt:'Необязательно',
@@ -307,7 +311,9 @@ const CONFIG = {
       q6:'Есть ли что-то конкретное, что вы хотели бы узнать про AI?',
       q6hint:'Своими словами — инструмент, задача или вопрос, к которому возвращаетесь.',
       q6ph:'Что хотели бы узнать?',
-      submit:'Скопировать мои ответы',
+      submit:'Отправить мои ответы',
+      sent:'Спасибо — ваши ответы сохранены.',
+      backup:'Резервная копия (пришлите Дмитрию, только если попросят):',
       copied:'Скопировано. Вставьте это в личку Дмитрию в Slack.',
       contains:'Это просто ваши ответы обычным текстом.',
       copyFallback:'Копирование не сработало автоматически — выделите строку ниже и скопируйте.',
@@ -527,12 +533,23 @@ document.getElementById('submit').addEventListener('click',()=>{
     `${S.rBarrier}: ${barrier.value.trim()||N}`,
     `${S.rLearn}: ${learn.value.trim()||N}`,
   ].join('\n');
+  const tasksJoined = taskLabels.length ? taskLabels.join('; ') : '';
+  const payload = {
+    team: teamLabel, level: lvlLine, tasks: tasksJoined,
+    try_task: own.value.trim(), barrier: barrier.value.trim(), learn: learn.value.trim()
+  };
+  if(CONFIG.ENDPOINT){
+    try{
+      fetch(CONFIG.ENDPOINT, {method:'POST', mode:'no-cors', keepalive:true,
+        headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload)});
+    }catch(e){}
+  }
   const box=document.getElementById('payload');
-  box.value=text; copybox.classList.add('show');
-  const done=ok=>{document.getElementById('t-copied').textContent = ok? S.copied : S.copyFallback;};
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(()=>done(true)).catch(()=>{box.focus();box.select();done(false);});
-  }else{box.focus();box.select();done(false);}
+  box.value=text;
+  document.getElementById('t-copied').textContent=S.sent;
+  document.getElementById('t-contains').textContent=S.backup;
+  copybox.classList.add('show');
+  document.getElementById('submit').disabled=true;
   copybox.scrollIntoView({behavior:'smooth',block:'nearest'});
 });
 
