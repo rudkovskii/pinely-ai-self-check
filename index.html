@@ -92,6 +92,7 @@
   .addrow input:focus-visible{outline:2px solid var(--green);outline-offset:1px}
   .addrow .add{font-family:var(--font);font-weight:700;font-size:14px;border:1px solid var(--green);background:#fff;
     color:var(--green);border-radius:100px;padding:0 18px;cursor:pointer}
+  .addmore{font-size:13px;color:var(--muted);margin:10px 0 0}
 
   textarea{width:100%;font-family:var(--font);font-size:16px;padding:12px 14px;border:1px solid var(--line);
     border-radius:12px;resize:vertical;min-height:84px}
@@ -108,7 +109,7 @@
   .copybox.show{display:block}
   .copybox .ok{color:var(--green);font-weight:700;font-size:14px}
   .copybox .sub{color:var(--muted);font-size:13px;margin:2px 0 10px}
-  .copybox textarea{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;min-height:64px;background:#fafafa}
+  .copybox textarea{font-family:var(--font);font-size:14px;line-height:1.55;min-height:170px;background:#fafafa;white-space:pre-wrap}
 
   footer{color:var(--muted);font-size:12px;text-align:center;margin-top:48px}
 </style>
@@ -158,6 +159,7 @@
       <input type="text" id="addinput" maxlength="80">
       <button type="button" class="add" id="addbtn"></button>
     </div>
+    <p class="addmore" id="t-addmore"></p>
   </div>
 
   <!-- Q4 own task -->
@@ -166,6 +168,22 @@
     <p class="qhint" id="t-q4hint"></p>
     <textarea id="owntask" maxlength="300"></textarea>
     <div class="counter"><span id="count">0</span>/300</div>
+  </div>
+
+  <!-- Q5 barrier -->
+  <div class="q">
+    <p class="qlabel" id="t-q5">Barrier<span class="opt">Optional</span></p>
+    <p class="qhint" id="t-q5hint"></p>
+    <textarea id="barrier" maxlength="300"></textarea>
+    <div class="counter"><span id="count5">0</span>/300</div>
+  </div>
+
+  <!-- Q6 learn -->
+  <div class="q">
+    <p class="qlabel" id="t-q6">Learn<span class="opt">Optional</span></p>
+    <p class="qhint" id="t-q6hint"></p>
+    <textarea id="learn" maxlength="300"></textarea>
+    <div class="counter"><span id="count6">0</span>/300</div>
   </div>
 
   <div class="submit">
@@ -190,7 +208,7 @@ const TILES = {"mountains": ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
 const CONFIG = {
   VISUAL_STYLE: 'dots',          // 'trees' | 'sprout' | 'mountains' | 'icons' | 'dots'
   LANG: 'en',                    // 'en' | 'ru'
-  SHOW_SWITCHER: true,           // true — показывать переключатель визуала (для выбора). Перед выкаткой поставить false.
+  SHOW_SWITCHER: false,           // true — показывать переключатель визуала (для выбора). Перед выкаткой поставить false.
 
   TEAMS: [
     {id:'administrative',      label:'Administrative Department and Travel'},
@@ -248,13 +266,23 @@ const CONFIG = {
       q4:'Which task would you like to work through with AI?',
       q4hint:"Pick one real task from your week you'd be curious to try with AI. A line or two is enough.",
       q4ph:'Keep it general — no client names or figures.',
+      addMore:'You can add several — press Enter or Add after each one.',
+      q5:'Is there anything holding you back from using AI at work?',
+      q5hint:'For example: not sure where to start, unsure about data, no time to learn. A line is enough.',
+      q5ph:'What gets in the way?',
+      q6:'Is there something specific you would like to learn about AI?',
+      q6hint:'In your own words — a tool, a task, or a question you keep coming back to.',
+      q6ph:'What would you like to learn?',
       submit:'Copy my answers',
-      copied:'Copied. Paste this line into the survey thread in Slack.',
-      contains:'It contains your answers only.',
+      copied:'Copied. Paste it into your DM to Dmitrii in Slack.',
+      contains:'It is just your answers, in plain text.',
       copyFallback:'Copy did not run automatically — select the line below and copy it.',
       errTeam:'Please select your team.',
       errLevel:'Please place yourself on the map.',
       footer:'AI-readiness check · prepared by Dmitrii Rudkovskii for Pinely',
+      rTitle:'AI at work — self-check', rTeam:'Team', rLevel:'Where I am',
+      rTasks:'I work most with', rTryTask:'A task I would try with AI',
+      rBarrier:'What holds me back', rLearn:'What I would like to learn', rLean:'leaning toward', rNone:'—',
     },
     ru:{
       title:'AI в работе — быстрая самооценка',
@@ -271,13 +299,23 @@ const CONFIG = {
       q4:'Какую задачу вам было бы интересно разобрать с AI?',
       q4hint:'Выберите одну реальную задачу из вашей недели, которую любопытно попробовать с AI. Хватит строки-двух.',
       q4ph:'Общими словами — без имён клиентов и цифр.',
+      addMore:'Можно добавить несколько — жмите Enter или «Добавить» после каждого.',
+      q5:'Есть ли что-то, что мешает вам использовать AI в работе?',
+      q5hint:'Например: не знаю, с чего начать; сомнения по данным; нет времени разобраться. Хватит строки.',
+      q5ph:'Что мешает?',
+      q6:'Есть ли что-то конкретное, что вы хотели бы узнать про AI?',
+      q6hint:'Своими словами — инструмент, задача или вопрос, к которому возвращаетесь.',
+      q6ph:'Что хотели бы узнать?',
       submit:'Скопировать мои ответы',
-      copied:'Скопировано. Вставьте эту строку в тред опроса в Slack.',
-      contains:'В ней только ваши ответы.',
+      copied:'Скопировано. Вставьте это в личку Дмитрию в Slack.',
+      contains:'Это просто ваши ответы обычным текстом.',
       copyFallback:'Копирование не сработало автоматически — выделите строку ниже и скопируйте.',
       errTeam:'Выберите команду.',
       errLevel:'Поставьте себя на карту.',
       footer:'AI-readiness check · подготовил Дмитрий Рудковский для Pinely',
+      rTitle:'AI в работе — самооценка', rTeam:'Команда', rLevel:'Где я сейчас',
+      rTasks:'Чаще всего работаю с', rTryTask:'Задача, которую хочу попробовать с AI',
+      rBarrier:'Что меня останавливает', rLearn:'Что хочу узнать', rLean:'ближе к', rNone:'—',
     },
   },
 };
@@ -339,6 +377,13 @@ document.getElementById('t-q1').innerHTML=S.q1+`<span class="req">${S.req}</span
 document.getElementById('t-q2').innerHTML=S.q2.split('—')[0].trim()+`<span class="req">${S.req}</span>`;
 document.getElementById('t-q4').innerHTML=S.q4+`<span class="opt">${S.opt}</span>`;
 document.getElementById('t-q4hint').textContent=S.q4hint;
+document.getElementById('t-q5').innerHTML=S.q5+`<span class="opt">${S.opt}</span>`;
+document.getElementById('t-q5hint').textContent=S.q5hint;
+document.getElementById('t-q6').innerHTML=S.q6+`<span class="opt">${S.opt}</span>`;
+document.getElementById('t-q6hint').textContent=S.q6hint;
+document.getElementById('t-addmore').textContent=S.addMore;
+document.getElementById('barrier').placeholder=S.q5ph;
+document.getElementById('learn').placeholder=S.q6ph;
 
 /* ---- team ---- */
 const teamSel=document.getElementById('team');
@@ -416,6 +461,10 @@ checksEl.addEventListener('change',save);
 /* ---- own task ---- */
 const own=document.getElementById('owntask');
 own.addEventListener('input',()=>{document.getElementById('count').textContent=own.value.length;save();});
+const barrier=document.getElementById('barrier');
+const learn=document.getElementById('learn');
+barrier.addEventListener('input',()=>{document.getElementById('count5').textContent=barrier.value.length;save();});
+learn.addEventListener('input',()=>{document.getElementById('count6').textContent=learn.value.length;save();});
 
 /* ---- switcher ---- */
 const switchEl=document.getElementById('switch');
@@ -432,7 +481,7 @@ function save(){
   const data={
     team:teamSel.value, val, touched,
     tasks:[...checksEl.querySelectorAll('input:checked')].map(c=>c.value),
-    customTasks, own:own.value, style,
+    customTasks, own:own.value, barrier:barrier.value, learn:learn.value, style,
   };
   try{sessionStorage.setItem(KEY,JSON.stringify(data));}catch(e){}
 }
@@ -444,6 +493,8 @@ function restore(){
   (d.tasks||[]).forEach(id=>{const c=checksEl.querySelector(`input[value="${id}"]`);if(c)c.checked=true;});
   customTasks=d.customTasks||[]; renderChips();
   if(d.own){own.value=d.own;document.getElementById('count').textContent=d.own.length;}
+  if(d.barrier){barrier.value=d.barrier;document.getElementById('count5').textContent=d.barrier.length;}
+  if(d.learn){learn.value=d.learn;document.getElementById('count6').textContent=d.learn.length;}
   if(d.style && CONFIG.SHOW_SWITCHER)applyStyle(d.style);
 }
 
@@ -455,22 +506,31 @@ document.getElementById('submit').addEventListener('click',()=>{
   if(!teamSel.value){err.textContent=S.errTeam;err.classList.add('show');teamSel.focus();return;}
   if(!touched){err.textContent=S.errLevel;err.classList.add('show');track.focus();return;}
   const idx=nearest(val);
-  const payload={
-    v:3, variant:'short', ts:new Date().toISOString(),
-    team:teamSel.value,
-    self_level:idx+1,
-    self_level_raw:Math.round(val),
-    tasks:[...checksEl.querySelectorAll('input:checked')].map(c=>c.value),
-    tasks_custom:customTasks.slice(),
-    own_task:own.value.trim(),
-    duration_sec:Math.round((Date.now()-startedAt)/1000),
-  };
-  const line=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  const center=idx*25, diff=val-center;
+  let lvlLine=`${LEVELS[idx].name} (${idx+1}/5)`;
+  if(Math.abs(diff)>=7){
+    const nb = diff>0 ? LEVELS[Math.min(idx+1,4)] : LEVELS[Math.max(idx-1,0)];
+    if(nb && nb.name!==LEVELS[idx].name) lvlLine+=`, ${S.rLean} ${nb.name}`;
+  }
+  const taskLabels=[...checksEl.querySelectorAll('input:checked')]
+    .map(c=>{const t=CONFIG.TASKS.find(x=>x.id===c.value);return t?t.label:c.value;})
+    .concat(customTasks);
+  const teamLabel=(CONFIG.TEAMS.find(t=>t.id===teamSel.value)||{}).label||teamSel.value;
+  const N=S.rNone;
+  const text=[
+    S.rTitle,
+    `${S.rTeam}: ${teamLabel}`,
+    `${S.rLevel}: ${lvlLine}`,
+    `${S.rTasks}: ${taskLabels.length?taskLabels.join('; '):N}`,
+    `${S.rTryTask}: ${own.value.trim()||N}`,
+    `${S.rBarrier}: ${barrier.value.trim()||N}`,
+    `${S.rLearn}: ${learn.value.trim()||N}`,
+  ].join('\n');
   const box=document.getElementById('payload');
-  box.value=line; copybox.classList.add('show');
+  box.value=text; copybox.classList.add('show');
   const done=ok=>{document.getElementById('t-copied').textContent = ok? S.copied : S.copyFallback;};
   if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(line).then(()=>done(true)).catch(()=>{box.focus();box.select();done(false);});
+    navigator.clipboard.writeText(text).then(()=>done(true)).catch(()=>{box.focus();box.select();done(false);});
   }else{box.focus();box.select();done(false);}
   copybox.scrollIntoView({behavior:'smooth',block:'nearest'});
 });
