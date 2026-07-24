@@ -16,10 +16,10 @@
     -webkit-font-smoothing:antialiased;line-height:1.5;}
   .wrap{max-width:720px;margin:0 auto;padding:28px 20px 90px;}
 
-  h1{font-size:28px;font-weight:800;letter-spacing:-.01em;margin:0 0 8px}
+  h1{font-size:33px;font-weight:800;letter-spacing:-.01em;margin:0 0 8px}
   h1 .dot{color:var(--green)}
-  .lead{color:var(--muted);font-size:16px;margin:0}
-  .disclaimer{color:var(--muted);font-size:13px;margin:14px 0 0;padding:10px 12px;
+  .lead{color:var(--muted);font-size:18px;margin:0}
+  .disclaimer{color:var(--muted);font-size:14px;margin:14px 0 0;padding:10px 12px;
     border:1px solid var(--line);border-radius:12px;background:#fafafa}
 
   /* review-only visual switcher */
@@ -32,12 +32,12 @@
   .switch .hint{font-size:12px;color:var(--muted);margin-top:8px}
 
   .q{margin:34px 0}
-  .q .qlabel{font-size:17px;font-weight:800;margin:0 0 4px}
+  .q .qlabel{font-size:19px;font-weight:800;margin:0 0 4px}
   .q .req{font-size:12px;font-weight:700;color:var(--green);margin-left:8px}
   .q .opt{font-size:12px;font-weight:700;color:var(--muted);margin-left:8px}
-  .q .qhint{font-size:14px;color:var(--muted);margin:0 0 14px}
+  .q .qhint{font-size:16px;color:var(--muted);margin:0 0 14px}
 
-  select{font-family:var(--font);font-size:16px;padding:12px 14px;border:1px solid var(--line);
+  select{font-family:var(--font);font-size:17px;padding:12px 14px;border:1px solid var(--line);
     border-radius:12px;background:#fff;color:var(--ink);width:100%;max-width:380px;appearance:none;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='2' fill='none'/%3E%3C/svg%3E");
     background-repeat:no-repeat;background-position:right 14px center}
@@ -49,7 +49,7 @@
   .tile .art{width:100%;max-width:130px;aspect-ratio:5/4;display:flex;align-items:flex-end;justify-content:center}
   .tile .art img{width:100%;height:100%;object-fit:contain;display:block}
   .tile .art svg{width:100%;height:100%;display:block}
-  .tile .name{font-size:12.5px;font-weight:700;margin-top:8px;letter-spacing:-.01em}
+  .tile .name{font-size:13.5px;font-weight:700;margin-top:8px;letter-spacing:-.01em}
   .tile.dim{opacity:var(--dim)}
   .tile.active .art{transform:scale(1.06)}
   .tile.active .name{color:var(--green)}
@@ -69,7 +69,7 @@
   .desc{display:flex;gap:12px;padding:9px 12px;border-radius:12px;transition:background .18s,opacity .18s}
   .desc .dnum{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:#f0f0f0;color:var(--muted);
     font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
-  .desc .dbody{font-size:14px}
+  .desc .dbody{font-size:16px}
   .desc .dname{font-weight:800}
   .desc .dtext{color:var(--muted)}
   .desc.active{background:var(--soft)}
@@ -81,25 +81,25 @@
   /* tasks */
   .checks{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
   @media(max-width:520px){.checks{grid-template-columns:1fr}}
-  .check{display:flex;align-items:flex-start;gap:10px;font-size:15px;cursor:pointer}
+  .check{display:flex;align-items:flex-start;gap:10px;font-size:16.5px;cursor:pointer}
   .check input{width:19px;height:19px;margin-top:1px;accent-color:var(--green);flex:0 0 auto;cursor:pointer}
   .customchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
   .chip{display:inline-flex;align-items:center;gap:8px;background:var(--soft);border:1px solid var(--green2);
-    color:#1f6b36;border-radius:100px;padding:6px 8px 6px 13px;font-size:14px}
+    color:#1f6b36;border-radius:100px;padding:6px 8px 6px 13px;font-size:15px}
   .chip button{border:none;background:none;color:#1f6b36;font-size:16px;line-height:1;cursor:pointer;padding:0 2px}
   .addrow{display:flex;gap:8px;margin-top:14px;max-width:420px}
-  .addrow input{flex:1;font-family:var(--font);font-size:15px;padding:10px 13px;border:1px solid var(--line);border-radius:100px}
+  .addrow input{flex:1;font-family:var(--font);font-size:16px;padding:10px 13px;border:1px solid var(--line);border-radius:100px}
   .addrow input:focus-visible{outline:2px solid var(--green);outline-offset:1px}
   .addrow .add{font-family:var(--font);font-weight:700;font-size:14px;border:1px solid var(--green);background:#fff;
     color:var(--green);border-radius:100px;padding:0 18px;cursor:pointer}
 
-  textarea{width:100%;font-family:var(--font);font-size:15px;padding:12px 14px;border:1px solid var(--line);
+  textarea{width:100%;font-family:var(--font);font-size:16px;padding:12px 14px;border:1px solid var(--line);
     border-radius:12px;resize:vertical;min-height:84px}
   textarea:focus-visible{outline:2px solid var(--green);outline-offset:1px}
   .counter{font-size:12px;color:var(--muted);text-align:right;margin-top:4px}
 
   .submit{margin-top:36px}
-  .btn{font-family:var(--font);font-size:16px;font-weight:700;border:none;background:var(--green);color:#fff;
+  .btn{font-family:var(--font);font-size:17px;font-weight:700;border:none;background:var(--green);color:#fff;
     border-radius:100px;padding:14px 30px;cursor:pointer}
   .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   .err{color:#c0392b;font-size:14px;margin-top:12px;display:none}
